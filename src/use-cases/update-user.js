@@ -1,13 +1,12 @@
 import bcrypt from 'bcrypt'
-import {
-    PostgresGetUserByEmailRepository,
-    PostgresUpdateUserRepository,
-} from '../repositories/postgres/index.js'
+import { PostgresGetUserByEmailRepository } from '../repositories/postgres/index.js'
 import { EmailAlreadyInUseError } from '../errors/user.js'
 
 export class UpdateUserUseCase {
+    constructor(updateUserRepository) {
+        this.updateUserRepository = updateUserRepository
+    }
     async execute(userId, updateUserParams) {
-        // 1. se o email estiver sendo atualizado, verificar se ja esta em uso
         if (updateUserParams.email) {
             const postgresGetUserByEmailReposityory =
                 new PostgresGetUserByEmailRepository()
@@ -25,7 +24,6 @@ export class UpdateUserUseCase {
             ...updateUserParams,
         }
 
-        // 2. se a senha estiver sendo atualizada, criptografa-la
         if (updateUserParams.password) {
             const hashedpassword = await bcrypt.hash(
                 updateUserParams.password,
@@ -35,9 +33,7 @@ export class UpdateUserUseCase {
             user.password = hashedpassword
         }
 
-        // 3. chamar o repository para atualizar o usuario
-        const postgresUpdateUserRepository = new PostgresUpdateUserRepository()
-        const updatedUser = await postgresUpdateUserRepository.execute(
+        const updatedUser = await this.updateUserRepository.execute(
             userId,
             user,
         )
