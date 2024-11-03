@@ -2,6 +2,7 @@ import { DeleteUserUserCase } from '../use-cases/index.js'
 import {
     checkIfIdIsValid,
     invalidIdResponse,
+    userNotFoundResponde,
     ok,
     serverError,
 } from './helpers/index.js'
@@ -18,7 +19,11 @@ export class DeleteUserController {
 
             const deleteUserUseCase = new DeleteUserUserCase()
 
-            const deletedUser = deleteUserUseCase.execute(userId)
+            const deletedUser = await deleteUserUseCase.execute(userId)
+
+            if (!deletedUser) {
+                return userNotFoundResponde()
+            }
 
             return ok(deletedUser)
         } catch (error) {

@@ -1,5 +1,5 @@
 import validator from 'validator'
-import { badRequest } from './https.js'
+import { badRequest, notFound } from './https.js'
 
 export const invalidPasswordResponse = () =>
     badRequest({
@@ -21,3 +21,8 @@ export const checkIfPasswordIsValid = (password) => password.length >= 6
 export const checkIfEmailIsValid = (email) => validator.isEmail(email)
 
 export const checkIfIdIsValid = (id) => validator.isUUID(id)
+
+export const userNotFoundResponde = () =>
+    notFound({
+        message: 'User not found.',
+    })
