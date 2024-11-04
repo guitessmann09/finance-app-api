@@ -5,7 +5,7 @@ import {
     created,
     invalidIdResponse,
     serverError,
-} from '../helpers'
+} from '../helpers/index.js'
 
 export class CreateTransactionController {
     constructor(createTransactionUseCase) {
@@ -15,17 +15,13 @@ export class CreateTransactionController {
         try {
             const params = httpRequest.body
 
-            const requireFields = [
-                'id',
-                'user_id',
-                'name',
-                'date',
-                'amount',
-                'type',
-            ]
+            const requireFields = ['user_id', 'name', 'date', 'amount', 'type']
 
             for (const field of requireFields) {
-                if (!params[field] || params[field].trim().length === 0) {
+                if (
+                    !params[field] ||
+                    params[field].toString().trim().length === 0
+                ) {
                     return badRequest({ message: `Missing param: ${field}` })
                 }
             }
@@ -43,7 +39,7 @@ export class CreateTransactionController {
             }
 
             const amountIsValid = validator.isCurrency(
-                params.amount.toSting(),
+                params.amount.toString(),
                 {
                     digits_after_decimal: [2],
                     allow_negatives: false,
@@ -64,7 +60,7 @@ export class CreateTransactionController {
             )
 
             if (!typeIsValid) {
-                badRequest({
+                return badRequest({
                     message: 'The type mus be EARNING, EXPENSE or INVESTMENT',
                 })
             }
