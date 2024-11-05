@@ -16,8 +16,6 @@ export class CreateUserUseCase {
         }
         const userId = uuidv4()
 
-        console.log(userId)
-
         const hashedpassword = await bcrypt.hash(createUserParams.password, 10)
 
         const user = {
