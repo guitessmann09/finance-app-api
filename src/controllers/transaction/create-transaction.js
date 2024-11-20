@@ -10,7 +10,7 @@ import {
     checkIfAmountIsValid,
     checkIfTypeIsValid,
     invalidAmountResponse,
-    invalidTypeResponde,
+    invalidTypeResponse,
 } from '../helpers/transaction.js'
 
 export class CreateTransactionController {
@@ -47,7 +47,7 @@ export class CreateTransactionController {
             const typeIsValid = checkIfTypeIsValid(type)
 
             if (!typeIsValid) {
-                return invalidTypeResponde()
+                return invalidTypeResponse()
             }
 
             const transaction = await this.createTransactionUseCase.execute({

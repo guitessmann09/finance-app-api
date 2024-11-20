@@ -2,7 +2,7 @@ import { ok, serverError } from '../helpers/index.js'
 import {
     invalidIdResponse,
     checkIfIdIsValid,
-    userNotFoundResponde,
+    userNotFoundResponse,
 } from '../helpers/index.js'
 
 export class GetUserByIdController {
@@ -22,7 +22,7 @@ export class GetUserByIdController {
             )
 
             if (!user) {
-                return userNotFoundResponde()
+                return userNotFoundResponse()
             }
             return ok(user)
         } catch (error) {
