@@ -18,7 +18,7 @@ export const invalidAmountResponse = () => {
     })
 }
 
-export const invalidTypeResponde = () => {
+export const invalidTypeResponse = () => {
     return badRequest({
         message: 'The type mus be EARNING, EXPENSE or INVESTMENT',
     })
