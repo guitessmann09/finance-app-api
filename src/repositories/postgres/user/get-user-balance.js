@@ -1,9 +1,9 @@
+import { Prisma } from '@prisma/client'
 import { prisma } from '../../../../prisma/prisma.js'
-
 export class PostgresGetUserBalanceRepository {
     async execute(userId) {
         const {
-            _sum: { totalExpenses },
+            _sum: { amount: totalExpenses },
         } = await prisma.transaction.aggregate({
             where: {
                 user_id: userId,
@@ -15,7 +15,7 @@ export class PostgresGetUserBalanceRepository {
         })
 
         const {
-            _sum: { totalEarnings },
+            _sum: { amount: totalEarnings },
         } = await prisma.transaction.aggregate({
             where: {
                 user_id: userId,
@@ -26,7 +26,7 @@ export class PostgresGetUserBalanceRepository {
             },
         })
         const {
-            _sum: { totalInvestments },
+            _sum: { amount: totalInvestments },
         } = await prisma.transaction.aggregate({
             where: {
                 user_id: userId,
@@ -37,16 +37,18 @@ export class PostgresGetUserBalanceRepository {
             },
         })
 
-        const _totalEarnings = totalEarnings || 0
-        const _totalExpenses = totalExpenses || 0
-        const _totalInvestments = totalInvestments || 0
+        const _totalEarnings = totalEarnings || new Prisma.Decimal(0)
+        const _totalExpenses = totalExpenses || new Prisma.Decimal(0)
+        const _totalInvestments = totalInvestments || new Prisma.Decimal(0)
 
-        const balance = _totalEarnings - _totalExpenses - _totalInvestments
+        const balance = new Prisma.Decimal(
+            _totalEarnings - _totalExpenses - _totalInvestments,
+        )
 
         return {
-            earnings: Number(_totalEarnings),
-            expenses: Number(_totalExpenses),
-            investments: Number(_totalInvestments),
+            earnings: _totalEarnings,
+            expenses: _totalExpenses,
+            investments: _totalInvestments,
             balance,
         }
     }
